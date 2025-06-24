@@ -52,6 +52,7 @@ func System(ctx context.Context, group *ghttp.RouterGroup) {
 			systemController.SysJob, //定时任务管理
 
 			systemController.SysJobLog, //定时任务日志
+			systemController.SysFs, // 文件管理
 
 			systemController.SysUserOnline, //在线用户
 

@@ -47,13 +47,25 @@ type (
 		// JobLogList 获取任务日志列表
 		JobLogList(ctx context.Context, input *model.GetJobLogListInput) (total int, out []*model.SysJobLogOut, err error)
 		// AddJobLog 添加任务日志
-		AddJobLog(ctx context.Context,input *model.SysJobLogAddInput) (err error)
+		AddJobLog(ctx context.Context, input *model.SysJobLogAddInput) (err error)
 		// DelJobLogByIds 根据ID删除任务日志
 		DelJobLogByIds(ctx context.Context, ids []int) (err error)
 		// Export 导出任务日志列表
 		Export(ctx context.Context, input *model.GetJobLogListInput) (err error)
 		// ClearJobLogByDays 清理指定天数的定时任务日志
 		ClearJobLogByDays(ctx context.Context,days int) (err error)
+	}
+	ISysFile interface {
+		// GetList 获取文件列表
+		GetFileList(ctx context.Context, path string) (out []model.FileItem, err error)
+		// DelFile 删除文件
+		DelFile(ctx context.Context, id uint64, isDir bool) (err error)
+		// UploadFile 上传文件
+		UploadFile(ctx context.Context, path string, Remarks string, file *ghttp.UploadFile) (err error)
+		// CreatDir 创建目录
+		CreateDir(ctx context.Context, path string, Remarks string, dir string) (err error)
+		// GetFullPath 获取文件完整路径
+		GetFullPath(ctx context.Context, id uint64) (fullPath string, err error)
 	}
 	ISysLoginLog interface {
 		Invoke(ctx context.Context, data *model.LoginLogParams)
@@ -470,6 +482,7 @@ var (
 	localSysAuthorize        ISysAuthorize
 	localSysJob              ISysJob
 	localSysJobLog           ISysJobLog
+	localSysFile             ISysFile
 	localSysLoginLog         ISysLoginLog
 	localSysMenuApi          ISysMenuApi
 	localSysUserRole         ISysUserRole
@@ -553,6 +566,18 @@ func SysJobLog() ISysJobLog {
 
 func RegisterSysJobLog(i ISysJobLog) {
 	localSysJobLog = i
+}
+
+func SysFile() ISysFile {
+	if localSysFile == nil {
+		panic("implement not found for interface ISysFile, forgot register?")
+	}
+
+	return localSysFile
+}
+
+func RegisterSysFile(i ISysFile) {
+	localSysFile = i
 }
 
 func SysLoginLog() ISysLoginLog {

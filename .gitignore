@@ -23,6 +23,7 @@ resource/log/
 resource/public/*
 logs/
 upload/product_icon/
+upload
 extend/log/
 hack/config.yaml
 go.sum
