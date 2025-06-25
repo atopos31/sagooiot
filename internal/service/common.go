@@ -17,6 +17,11 @@ import (
 )
 
 type (
+	IFileSystem interface {
+		Save(ctx context.Context, file *ghttp.UploadFile, path string) error
+		Remove(ctx context.Context, path string) error
+		Download(ctx context.Context, response *ghttp.Response, path string) error
+	}
 	IUpload interface {
 		// UploadFiles 上传多文件
 		UploadFiles(ctx context.Context, files []*ghttp.UploadFile, checkFileType string, source int) (result common.UploadMultipleRes, err error)
@@ -109,6 +114,7 @@ type (
 )
 
 var (
+	localFileSystem  IFileSystem
 	localSysInfo     ISysInfo
 	localUpload      IUpload
 	localCheckAuth   ICheckAuth
@@ -183,6 +189,17 @@ func Upload() IUpload {
 
 func RegisterUpload(i IUpload) {
 	localUpload = i
+}
+
+func FileSystem() IFileSystem {
+	if localFileSystem == nil {
+		panic("implement not found for interface IFileSystem, forgot register?")
+	}
+	return localFileSystem
+}
+
+func RegisterFileSystem(i IFileSystem) {
+	localFileSystem = i
 }
 
 func CheckAuth() ICheckAuth {

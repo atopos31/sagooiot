@@ -16,6 +16,7 @@ type SysFsFile struct {
 	Name        interface{} // 文件名称（含扩展名）
 	DirectoryId interface{} // 所属目录的ID
 	Size        interface{} // 文件大小（字节）
+	Title       interface{} // 文件标题
 	Remarks     interface{} // 备注信息
 	UpdatedAt   *gtime.Time // 更新时间
 	CreatedAt   *gtime.Time // 创建时间

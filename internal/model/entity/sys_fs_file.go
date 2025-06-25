@@ -14,6 +14,7 @@ type SysFsFile struct {
 	Name        string      `json:"name"        orm:"name"         ` // 文件名称（含扩展名）
 	DirectoryId uint64      `json:"directoryId" orm:"directory_id" ` // 所属目录的ID
 	Size        uint64      `json:"size"        orm:"size"         ` // 文件大小（字节）
+	Title       string      `json:"title"       orm:"title"        ` // 文件标题
 	Remarks     string      `json:"remarks"     orm:"remarks"      ` // 备注信息
 	UpdatedAt   *gtime.Time `json:"updatedAt"   orm:"updated_at"   ` // 更新时间
 	CreatedAt   *gtime.Time `json:"createdAt"   orm:"created_at"   ` // 创建时间

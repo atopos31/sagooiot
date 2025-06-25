@@ -14,21 +14,25 @@ type cSysFs struct{}
 
 func (c *cSysFs) List(ctx context.Context, req *systemV1.SysFsListReq) (res *systemV1.SysFsDoRes, err error) {
 	g.Log().Debugf(ctx, "req: %+v", req)
-	files, err := service.SysFile().GetFileList(ctx, req.Path)
+	total,files, err := service.SysFile().GetFileList(ctx, req.Path,req.PageNum,req.PageSize)
 	if err != nil {
 		return nil, err
 	}
 	res = new(systemV1.SysFsDoRes)
-	res.Files = make([]systemV1.SysFsDoResData, len(files))
+	res.Data = make([]systemV1.SysFsDoResData, len(files))
 	for i, v := range files {
-		res.Files[i] = systemV1.SysFsDoResData{
+		res.Data[i] = systemV1.SysFsDoResData{
 			Id:       v.ID,
 			IsDir:    v.IsDir,
 			Name:     v.Name,
+			Title:    v.Title,
+			Remark:   v.Remarks,
 			Size:     v.Size,
 			UpdateAt: v.UpdateAt,
 		}
 	}
+	res.Total = total
+	res.CurrentPage = req.PageNum
 	return
 }
 
@@ -38,12 +42,18 @@ func (s *cSysFs) CreateDir(ctx context.Context, req *systemV1.SysCreateDirReq) (
 	if err != nil {
 		return
 	}
-	return nil,nil
+	return nil, nil
 }
 
 func (s *cSysFs) UploadFile(ctx context.Context, req *systemV1.SysFsUploadReq) (res *systemV1.SysFsDelRes, err error) {
-	err = service.SysFile().UploadFile(ctx, req.Path, req.Remarks, req.File)
-	return nil,err
+	var title string
+	if req.Title != "" {
+		title = req.Title
+	} else {
+		title = req.File.Filename
+	}
+	err = service.SysFile().UploadFile(ctx, req.Path, title, req.Remark, req.File)
+	return nil, err
 }
 
 func (c *cSysFs) Del(ctx context.Context, req *systemV1.SysFsDelReq) (res *systemV1.SysFsDelRes, err error) {
@@ -53,12 +63,46 @@ func (c *cSysFs) Del(ctx context.Context, req *systemV1.SysFsDelReq) (res *syste
 }
 
 func (c *cSysFs) Download(ctx context.Context, req *systemV1.SysFileDownloadReq) (res *systemV1.SysFsDownloadRes, err error) {
-	fullPath,err := service.SysFile().GetFullPath(ctx, req.Id)
+	fullPath, err := service.SysFile().GetFullPath(ctx, req.Id)
 	if err != nil {
 		return
 	}
 	request := g.RequestFromCtx(ctx)
 	g.Log().Debugf(ctx, "fullPath: %s", fullPath)
-	request.Response.ServeFileDownload(fullPath)
+	err = service.FileSystem().Download(ctx, request.Response, fullPath)
+	if err != nil {
+		return
+	}
+	return
+}
+
+func (c *cSysFs) SearchFile(ctx context.Context, req *systemV1.SysFsSearchFileReq) (res *systemV1.SysFsDoRes, err error) {
+	g.Log().Debugf(ctx, "SearchFile req: %+v", req)
+	total,out, err := service.SysFile().SearchFile(ctx, req.Query,req.PageNum,req.PageSize)
+	res = new(systemV1.SysFsDoRes)
+	res.Data = make([]systemV1.SysFsDoResData, len(out))
+	for i, v := range out {
+		res.Data[i] = systemV1.SysFsDoResData{
+			Id:       v.ID,
+			IsDir:    v.IsDir,
+			Name:     v.Name,
+			Title:    v.Title,
+			Remark:   v.Remarks,
+			Size:     v.Size,
+			UpdateAt: v.UpdateAt,
+		}
+	}
+	res.Total = total
+	res.CurrentPage = req.PageNum
+	return 
+}
+
+func (c *cSysFs) DirTre(ctx context.Context, req *systemV1.SysFsDirTreeReq) (res *systemV1.SysFsTreeRes, err error) {
+	out,err  := service.SysFile().DirTree(ctx)
+	if err != nil {
+		return nil,err
+	}
+	res = new(systemV1.SysFsTreeRes)
+	res.Dirs = out
 	return
 }

@@ -25,6 +25,7 @@ type SysFsFileColumns struct {
 	Name        string // 文件名称（含扩展名）
 	DirectoryId string // 所属目录的ID
 	Size        string // 文件大小（字节）
+	Title       string // 文件标题
 	Remarks     string // 备注信息
 	UpdatedAt   string // 更新时间
 	CreatedAt   string // 创建时间
@@ -39,6 +40,7 @@ var sysFsFileColumns = SysFsFileColumns{
 	Name:        "name",
 	DirectoryId: "directory_id",
 	Size:        "size",
+	Title:       "title",
 	Remarks:     "remarks",
 	UpdatedAt:   "updated_at",
 	CreatedAt:   "created_at",

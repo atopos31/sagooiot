@@ -53,19 +53,23 @@ type (
 		// Export 导出任务日志列表
 		Export(ctx context.Context, input *model.GetJobLogListInput) (err error)
 		// ClearJobLogByDays 清理指定天数的定时任务日志
-		ClearJobLogByDays(ctx context.Context,days int) (err error)
+		ClearJobLogByDays(ctx context.Context, days int) (err error)
 	}
 	ISysFile interface {
 		// GetList 获取文件列表
-		GetFileList(ctx context.Context, path string) (out []model.FileItem, err error)
+		GetFileList(ctx context.Context, path string, num int, size int) (total int,out []model.FileItem, err error)
 		// DelFile 删除文件
 		DelFile(ctx context.Context, id uint64, isDir bool) (err error)
 		// UploadFile 上传文件
-		UploadFile(ctx context.Context, path string, Remarks string, file *ghttp.UploadFile) (err error)
+		UploadFile(ctx context.Context, path string, title string, Remarks string, file *ghttp.UploadFile) (err error)
 		// CreatDir 创建目录
 		CreateDir(ctx context.Context, path string, Remarks string, dir string) (err error)
 		// GetFullPath 获取文件完整路径
 		GetFullPath(ctx context.Context, id uint64) (fullPath string, err error)
+		// SearchFile 搜索文件
+		SearchFile(ctx context.Context, query string, num int, size int) (total int,out []model.FileItem, err error)
+		// DirTree 目录树
+		DirTree(ctx context.Context) ([]*model.DirItemNode, error)
 	}
 	ISysLoginLog interface {
 		Invoke(ctx context.Context, data *model.LoginLogParams)
