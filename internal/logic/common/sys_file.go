@@ -14,8 +14,10 @@ import (
 )
 
 func init() {
-	_ = g.Cfg().MustGet(context.Background(), "system.upload.path").String()
-	service.RegisterFileSystem(NewMinioSystemFile())
+	path := g.Cfg().MustGet(context.Background(), "system.upload.path").String()
+	service.RegisterFileSystem(&LocalSysFile{
+		UploadPath: path,
+	})
 }
 
 type LocalSysFile struct {
