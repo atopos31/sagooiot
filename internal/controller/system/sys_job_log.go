@@ -48,7 +48,7 @@ func (a *cSysJobLog) List(ctx context.Context, req *system.GetJobLogListReq) (re
 
 	if out != nil {
 		if err = gconv.Scan(out, &res.Data); err != nil {
-			return
+			return 
 		}
 	}
 

@@ -60,8 +60,10 @@ func System(ctx context.Context, group *ghttp.RouterGroup) {
 			systemController.SysPlugins,       //插件管理
 			systemController.SysPluginsConfig, //插件配置管理
 
-			systemController.SysMessage,     // 通知中心
-			systemController.SysCertificate, // 证书管理
+			systemController.SysMessage,          // 通知中心
+			systemController.SysCertificate,      // 证书管理
+			systemController.SysComplaint,        // 投诉管理
+			systemController.SysComplaintFeedback, // 投诉反馈管理
 
 		)
 	})

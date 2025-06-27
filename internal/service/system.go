@@ -473,6 +473,42 @@ type (
 		// GetAll 获取所有的列表信息
 		GetAll(ctx context.Context) (data []*entity.SysMenuColumn, err error)
 	}
+	ISysComplaint interface {
+		// Add 添加投诉
+		Add(ctx context.Context, in *model.AddComplaintInput) (err error)
+		// ComplaintList 投诉列表
+		ComplaintList(ctx context.Context, input *model.ComplaintListDoInput) (total int, list []*model.ComplaintInfoRes, err error)
+		// GetComplaintByTicketNo 根据TicketNo获取投诉信息
+		GetComplaintByTicketNo(ctx context.Context, ticketNo int64) (out *model.ComplaintInfoRes, err error)
+		// Edit 编辑投诉
+		Edit(ctx context.Context, in *model.EditComplaintInput) (err error)
+		// DelInfoByTicketNo 根据TicketNo删除投诉
+		DelInfoByTicketNo(ctx context.Context, ticketNo int64) (err error)
+		// DelInfoByTicketNos 批量删除投诉
+		DelInfoByTicketNos(ctx context.Context, ticketNos []int64) (err error)
+		// GetOverview 获取投诉概览数据
+		GetOverview(ctx context.Context, timeRange string) (out *system.ComplaintOverviewData, err error)
+		// GetTypes 获取投诉类型数据
+		GetTypes(ctx context.Context) (out []*system.ComplaintTypeData, err error)
+		// GetMonthlyTrends 获取月度趋势数据
+		GetMonthlyTrends(ctx context.Context) (out []*system.ComplaintMonthlyData, err error)
+		// GetAreas 获取区域数据
+		GetAreas(ctx context.Context) (out []*system.ComplaintAreaData, err error)
+	}
+	ISysComplaintFeedback interface {
+		// Add 添加投诉反馈
+		Add(ctx context.Context, in *model.AddComplaintFeedbackInput) (err error)
+		// ComplaintFeedbackList 投诉反馈列表
+		ComplaintFeedbackList(ctx context.Context, input *model.ComplaintFeedbackListDoInput) (total int, list []*model.ComplaintFeedbackInfoRes, err error)
+		// GetComplaintFeedbackById 根据ID获取投诉反馈信息
+		GetComplaintFeedbackById(ctx context.Context, id int64) (out *model.ComplaintFeedbackInfoRes, err error)
+		// Edit 编辑投诉反馈
+		Edit(ctx context.Context, in *model.EditComplaintFeedbackInput) (err error)
+		// DelInfoById 根据ID删除投诉反馈
+		DelInfoById(ctx context.Context, id int64) (err error)
+		// DelInfoByIds 批量删除投诉反馈
+		DelInfoByIds(ctx context.Context, ids []int64) (err error)
+	}
 )
 
 var (
@@ -504,6 +540,8 @@ var (
 	localSysNotifications    ISysNotifications
 	localSysPlugins          ISysPlugins
 	localSysUserPost         ISysUserPost
+	localSysComplaint        ISysComplaint
+	localSysComplaintFeedback ISysComplaintFeedback
 )
 
 func SysCertificate() ISysCertificate {
@@ -813,4 +851,26 @@ func SysMenu() ISysMenu {
 
 func RegisterSysMenu(i ISysMenu) {
 	localSysMenu = i
+}
+
+func SysComplaint() ISysComplaint {
+	if localSysComplaint == nil {
+		panic("implement not found for interface ISysComplaint, forgot register?")
+	}
+	return localSysComplaint
+}
+
+func RegisterSysComplaint(i ISysComplaint) {
+	localSysComplaint = i
+}
+
+func SysComplaintFeedback() ISysComplaintFeedback {
+	if localSysComplaintFeedback == nil {
+		panic("implement not found for interface ISysComplaintFeedback, forgot register?")
+	}
+	return localSysComplaintFeedback
+}
+
+func RegisterSysComplaintFeedback(i ISysComplaintFeedback) {
+	localSysComplaintFeedback = i
 }
