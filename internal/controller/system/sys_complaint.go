@@ -33,15 +33,15 @@ func (c *cSysComplaint) GetComplaintList(ctx context.Context, req *system.Compla
 		g.Log().Error(ctx, "转换投诉列表输入参数失败", err)
 		return
 	}
-	total, out, err := service.SysComplaint().ComplaintList(ctx, input)
+	out, err := service.SysComplaint().ComplaintList(ctx, input)
 	if err != nil {
 		g.Log().Error(ctx, "获取投诉列表失败", err)
 		return
 	}
 	res = new(system.ComplaintListRes)
-	res.Total = total
-	res.CurrentPage = req.PageNum
-	res.Data = out
+	res.Total = out.Total
+	res.CurrentPage = out.CurrentPage
+	res.Data = out.Data
 	return
 }
 
@@ -123,6 +123,58 @@ func (c *cSysComplaint) GetComplaintAreas(ctx context.Context, req *system.Compl
 	}
 	res = &system.ComplaintAreasRes{
 		Data: data,
+	}
+	return
+}
+
+// GetComplaintProcessRecords 获取投诉处理记录
+func (c *cSysComplaint) GetComplaintProcessRecords(ctx context.Context, req *system.GetComplaintProcessRecordsReq) (res *system.GetComplaintProcessRecordsRes, err error) {
+	// 返回假数据
+	mockData := []*system.ComplaintProcessRecord{
+		{
+			Id:          1,
+			TicketNo:    req.TicketNo,
+			Status:      "pending",
+			Operator:    "系统",
+			Action:      "CREATE",
+			Description: "投诉工单已创建，等待处理",
+			CreatedAt:   "2024/01/15 22:30",
+			UpdatedAt:   "2024/01/15 22:30",
+		},
+		{
+			Id:          2,
+			TicketNo:    req.TicketNo,
+			Status:      "pending",
+			Operator:    "王主管",
+			Action:      "ASSIGN",
+			Description: "已指派给李工程师处理",
+			CreatedAt:   "2024/01/15 22:45",
+			UpdatedAt:   "2024/01/15 22:45",
+		},
+		{
+			Id:          3,
+			TicketNo:    req.TicketNo,
+			Status:      "pending",
+			Operator:    "李工程师",
+			Action:      "START_PROCESS",
+			Description: "工程师已接单，正在安排现场勘查",
+			CreatedAt:   "2024/01/15 23:20",
+			UpdatedAt:   "2024/01/15 23:20",
+		},
+		{
+			Id:          4,
+			TicketNo:    req.TicketNo,
+			Status:      "pending",
+			Operator:    "李工程师",
+			Action:      "SITE_SURVEY",
+			Description: "已完成现场勘查，确认污水井盖破损，需更换井盖并清理现场",
+			CreatedAt:   "2024/01/16 00:30",
+			UpdatedAt:   "2024/01/16 00:30",
+		},
+	}
+
+	res = &system.GetComplaintProcessRecordsRes{
+		Data: mockData,
 	}
 	return
 }

@@ -31,9 +31,8 @@ type ComplaintFeedbackListReq struct {
 }
 
 type ComplaintFeedbackListRes struct {
-	Data        []*model.ComplaintFeedbackInfoRes `json:"Data" dc:"数据列表"`
-	CurrentPage int                               `json:"currentPage" dc:"当前页码"`
-	Total       int                               `json:"Total" dc:"数据总数"`
+	common.PaginationRes
+	Data []*model.ComplaintFeedbackInfoRes `json:"Data" dc:"数据列表"`
 }
 
 // GetComplaintFeedbackByIdReq 根据ID获取投诉反馈请求

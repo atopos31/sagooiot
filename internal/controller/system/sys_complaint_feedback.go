@@ -2,6 +2,7 @@ package system
 
 import (
 	"context"
+	"sagooiot/api/v1/common"
 	"sagooiot/api/v1/system"
 	"sagooiot/internal/model"
 	"sagooiot/internal/service"
@@ -39,15 +40,17 @@ func (c *cSysComplaintFeedback) GetComplaintFeedbackList(ctx context.Context, re
 		g.Log().Error(ctx, "转换投诉反馈列表输入参数失败:", err)
 		return
 	}
-	total, out, err := service.SysComplaintFeedback().ComplaintFeedbackList(ctx, input)
+	out, err := service.SysComplaintFeedback().ComplaintFeedbackList(ctx, input)
 	if err != nil {
 		g.Log().Error(ctx, "获取投诉反馈列表失败:", err)
 		return
 	}
 	res = &system.ComplaintFeedbackListRes{
-		Total:       total,
-		CurrentPage: req.PageNum,
-		Data:        out,
+		PaginationRes: common.PaginationRes{
+			Total:       out.Total,
+			CurrentPage: out.CurrentPage,
+		},
+		Data: out.Data,
 	}
 	return
 }

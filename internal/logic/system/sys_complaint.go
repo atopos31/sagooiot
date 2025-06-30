@@ -83,7 +83,7 @@ func (s *sSysComplaint) Add(ctx context.Context, in *model.AddComplaintInput) (e
 }
 
 // ComplaintList 投诉列表
-func (s *sSysComplaint) ComplaintList(ctx context.Context, input *model.ComplaintListDoInput) (total int, list []*model.ComplaintInfoRes, err error) {
+func (s *sSysComplaint) ComplaintList(ctx context.Context, input *model.ComplaintListDoInput) (out *model.ComplaintListOutput, err error) {
 	m := dao.SysComplaints.Ctx(ctx).Where(dao.SysComplaints.Columns().IsDeleted, 0)
 
 	// 构建查询条件
@@ -101,7 +101,7 @@ func (s *sSysComplaint) ComplaintList(ctx context.Context, input *model.Complain
 	}
 
 	// 获取总数
-	total, err = m.Count()
+	total, err := m.Count()
 	if err != nil {
 		return
 	}
@@ -114,7 +114,7 @@ func (s *sSysComplaint) ComplaintList(ctx context.Context, input *model.Complain
 	}
 
 	// 转换为响应格式
-	list = make([]*model.ComplaintInfoRes, len(entities))
+	list := make([]*model.ComplaintInfoRes, len(entities))
 	for i, entity := range entities {
 		// 获取角色名称
 		assigneeName := s.getRoleName(ctx, entity.AssigneeId)
@@ -136,6 +136,13 @@ func (s *sSysComplaint) ComplaintList(ctx context.Context, input *model.Complain
 		}
 	}
 
+	out = &model.ComplaintListOutput{
+		PaginationOutput: model.PaginationOutput{
+			Total:       total,
+			CurrentPage: input.PageNum,
+		},
+		Data: list,
+	}
 	return
 }
 

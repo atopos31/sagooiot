@@ -62,7 +62,7 @@ func (s *sSysComplaintFeedback) Add(ctx context.Context, in *model.AddComplaintF
 }
 
 // ComplaintFeedbackList 投诉反馈列表
-func (s *sSysComplaintFeedback) ComplaintFeedbackList(ctx context.Context, input *model.ComplaintFeedbackListDoInput) (total int, list []*model.ComplaintFeedbackInfoRes, err error) {
+func (s *sSysComplaintFeedback) ComplaintFeedbackList(ctx context.Context, input *model.ComplaintFeedbackListDoInput) (out *model.ComplaintFeedbackListOutput, err error) {
 	m := dao.SysComplaintFeedback.Ctx(ctx).Where(dao.SysComplaintFeedback.Columns().IsDeleted, 0)
 
 	// 条件查询
@@ -77,10 +77,10 @@ func (s *sSysComplaintFeedback) ComplaintFeedbackList(ctx context.Context, input
 	}
 
 	// 获取总数
-	total, err = m.Count()
+	total, err := m.Count()
 	if err != nil {
 		g.Log().Error(ctx, "获取投诉反馈总数失败:", err)
-		return 0, nil, err
+		return
 	}
 
 	// 分页查询
@@ -95,11 +95,11 @@ func (s *sSysComplaintFeedback) ComplaintFeedbackList(ctx context.Context, input
 	err = m.Page(input.PageNum, input.PageSize).OrderDesc(dao.SysComplaintFeedback.Columns().CreatedAt).Scan(&feedbacks)
 	if err != nil {
 		g.Log().Error(ctx, "获取投诉反馈列表失败:", err)
-		return 0, nil, err
+		return
 	}
 
 	// 转换为响应格式
-	list = make([]*model.ComplaintFeedbackInfoRes, 0, len(feedbacks))
+	list := make([]*model.ComplaintFeedbackInfoRes, 0, len(feedbacks))
 	for _, feedback := range feedbacks {
 		item := &model.ComplaintFeedbackInfoRes{
 			Id:               feedback.Id,
@@ -116,7 +116,14 @@ func (s *sSysComplaintFeedback) ComplaintFeedbackList(ctx context.Context, input
 		list = append(list, item)
 	}
 
-	return total, list, nil
+	out = &model.ComplaintFeedbackListOutput{
+		PaginationOutput: model.PaginationOutput{
+			Total:       total,
+			CurrentPage: input.PageNum,
+		},
+		Data: list,
+	}
+	return
 }
 
 // GetComplaintFeedbackById 根据ID获取投诉反馈信息

@@ -39,6 +39,12 @@ type ComplaintInfoRes struct {
 	UpdatedAt       string  `json:"updatedAt" dc:"更新时间"`
 }
 
+// ComplaintListOutput 投诉列表输出
+type ComplaintListOutput struct {
+	PaginationOutput
+	Data []*ComplaintInfoRes `json:"data" dc:"投诉列表数据"`
+}
+
 // EditComplaintInput 投诉编辑
 type EditComplaintInput struct {
 	TicketNo        int64  `json:"id" v:"required#投诉单号不能为空" dc:"投诉单号"`

@@ -34,6 +34,12 @@ type ComplaintFeedbackInfoRes struct {
 	CreatedAt        string `json:"createdAt" dc:"创建时间"`
 }
 
+// ComplaintFeedbackListOutput 投诉反馈列表输出
+type ComplaintFeedbackListOutput struct {
+	PaginationOutput
+	Data []*ComplaintFeedbackInfoRes `json:"data" dc:"投诉反馈列表数据"`
+}
+
 // EditComplaintFeedbackInput 编辑投诉反馈
 type EditComplaintFeedbackInput struct {
 	Id               int64  `json:"id" v:"required#主键ID不能为空" dc:"主键ID"`

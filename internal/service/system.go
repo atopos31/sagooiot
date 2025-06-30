@@ -477,7 +477,7 @@ type (
 		// Add 添加投诉
 		Add(ctx context.Context, in *model.AddComplaintInput) (err error)
 		// ComplaintList 投诉列表
-		ComplaintList(ctx context.Context, input *model.ComplaintListDoInput) (total int, list []*model.ComplaintInfoRes, err error)
+		ComplaintList(ctx context.Context, input *model.ComplaintListDoInput) (out *model.ComplaintListOutput, err error)
 		// GetComplaintByTicketNo 根据TicketNo获取投诉信息
 		GetComplaintByTicketNo(ctx context.Context, ticketNo int64) (out *model.ComplaintInfoRes, err error)
 		// Edit 编辑投诉
@@ -499,7 +499,7 @@ type (
 		// Add 添加投诉反馈
 		Add(ctx context.Context, in *model.AddComplaintFeedbackInput) (err error)
 		// ComplaintFeedbackList 投诉反馈列表
-		ComplaintFeedbackList(ctx context.Context, input *model.ComplaintFeedbackListDoInput) (total int, list []*model.ComplaintFeedbackInfoRes, err error)
+		ComplaintFeedbackList(ctx context.Context, input *model.ComplaintFeedbackListDoInput) (out *model.ComplaintFeedbackListOutput, err error)
 		// GetComplaintFeedbackById 根据ID获取投诉反馈信息
 		GetComplaintFeedbackById(ctx context.Context, id int64) (out *model.ComplaintFeedbackInfoRes, err error)
 		// Edit 编辑投诉反馈

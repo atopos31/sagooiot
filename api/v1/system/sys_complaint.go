@@ -155,3 +155,26 @@ type ComplaintAreaData struct {
 	Count      int    `json:"count" dc:"数量"`
 	Percentage int    `json:"percentage" dc:"百分比"`
 }
+
+// GetComplaintProcessRecordsReq 获取投诉处理记录请求
+type GetComplaintProcessRecordsReq struct {
+	g.Meta   `path:"/complaint/records" tags:"投诉管理" method:"get" summary:"获取投诉处理记录"`
+	TicketNo int64 `json:"ticketNo" in:"query" v:"required#投诉单号不能为空" dc:"投诉单号"`
+}
+
+// GetComplaintProcessRecordsRes 获取投诉处理记录响应
+type GetComplaintProcessRecordsRes struct {
+	Data []*ComplaintProcessRecord `json:"data" dc:"处理记录列表"`
+}
+
+// ComplaintProcessRecord 投诉处理记录
+type ComplaintProcessRecord struct {
+	Id          int64  `json:"id" dc:"记录ID"`
+	TicketNo    int64  `json:"ticketNo" dc:"投诉单号"`
+	Status      string `json:"status" dc:"处理状态"`
+	Operator    string `json:"operator" dc:"操作人"`
+	Action      string `json:"action" dc:"操作动作"`
+	Description string `json:"description" dc:"处理描述"`
+	CreatedAt   string `json:"createdAt" dc:"创建时间"`
+	UpdatedAt   string `json:"updatedAt" dc:"更新时间"`
+}
